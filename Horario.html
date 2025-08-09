@@ -1,125 +1,281 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Horario del Alumno</title>
-    <style>
-        body {
-            font-family: "Segoe UI", Tahoma, Arial, sans-serif;
-            font-size: 12.8px; /* tamaño exacto */
-            background-color: #ffffff;
-            margin: 0;
-            padding: 0;
-            color: #000000;
-        }
-        .header {
-            background-color: #002d62; /* azul exacto */
-            color: #ffffff;
-            padding: 10px 15px;
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .subheader {
-            background-color: #d9d9d9; /* gris exacto */
-            padding: 8px 15px;
-            font-weight: bold;
-            border-bottom: 1px solid #a6a6a6; /* gris borde exacto */
-        }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Horario — Replica</title>
+<style>
+  /* Tipografía y reset */
+  :root{
+    --azul-oscuro: #002d62; /* azul del encabezado / títulos */
+    --azul-claro: #0b66b2;  /* acento si se necesita */
+    --gris-claro: #e9e9e9;
+    --gris-borde: #bfbfbf;
+    --texto-prof: #595959;
+    --fondo: #ffffff;
+    --card-bg: #ffffff;
+    --fila-even: #fafafa;
+    --max-width: 420px; /* tamaño móvil similar a tu captura */
+  }
+  html,body{
+    height:100%;
+    margin:0;
+    background:var(--fondo);
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    color:#000;
+    font-size:13px;
+  }
 
-    table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-        th, td {
-            border: 1px solid #a6a6a6;
-            padding: 6px 8px;
-            text-align: left;
-            vertical-align: top;
-            line-height: 1.3;
-        }
-        th {
-            background-color: #f2f2f2; /* gris encabezado exacto */
-            font-weight: bold;
-            color: #002d62; /* azul encabezado exacto */
-        }
-        .curso {
-            color: #002d62;
-            font-weight: bold;
-        }
-        tr:nth-child(even) td {
-            background-color: #fafafa; /* gris fila par exacto */
-        }
-        .profesor {
-            font-style: italic;
-            color: #595959; /* gris texto profesor exacto */
-        }
-    </style>
+  .wrap{
+    max-width:var(--max-width);
+    margin:18px auto;
+    box-shadow:0 1px 0 rgba(0,0,0,0.04);
+    border-radius:6px;
+    overflow:hidden;
+    border:1px solid #ddd;
+    background:var(--card-bg);
+  }
+
+  /* Encabezado azul */
+  .top-bar{
+    background:var(--azul-oscuro);
+    color:#fff;
+    padding:12px 14px;
+    font-weight:700;
+    font-size:17px;
+  }
+
+  /* Franja gris con texto secundario */
+  .sub-bar{
+    background:var(--gris-claro);
+    padding:8px 14px;
+    border-bottom:1px solid var(--gris-borde);
+    font-weight:600;
+    color:#111;
+  }
+
+  /* Contenedor de lista (cada materia) */
+  .list{
+    padding:10px 12px;
+  }
+
+  .materia-card{
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+    padding:10px;
+    border-radius:6px;
+    border:1px solid #e6e6e6;
+    margin-bottom:10px;
+    background:linear-gradient(180deg,#fff,#fff);
+  }
+
+  /* Caja azul izquierda: estrecha y con texto encima (clave/tipo) */
+  .lado-izq{
+    width:96px;
+    min-width:96px;
+    background:linear-gradient(180deg,var(--azul-oscuro),#003a7a);
+    color:#fff;
+    padding:8px 8px;
+    border-radius:4px;
+    box-sizing:border-box;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .lado-izq .clave{
+    font-size:12px;
+    font-weight:700;
+    line-height:1.05;
+  }
+  .lado-izq .tipo{
+    font-size:11px;
+    opacity:0.95;
+  }
+  .lado-izq .grupo{
+    font-size:11px;
+    opacity:0.9;
+  }
+
+  /* Contenido derecho: título de materia y detalles en texto */
+  .contenido{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .titulo-materia{
+    color:var(--azul-oscuro);
+    font-weight:800;
+    font-size:14px;
+    margin:0;
+  }
+  .detalle-text{
+    color:#111;
+    font-size:13px;
+    line-height:1.28;
+    margin:0;
+  }
+  .detalle-peque{
+    font-size:12px;
+    color:var(--texto-prof);
+    font-style:italic;
+  }
+
+  /* Diferenciar visualmente filas (como en la captura) */
+  .materia-card:nth-child(even){
+    background:var(--fila-even);
+  }
+
+  /* Ajustes para pantallas muy pequeñas */
+  @media (max-width:360px){
+    :root{ --max-width:360px; }
+    .lado-izq{ width:84px; min-width:84px; padding:6px; }
+    .top-bar{ font-size:15px; }
+  }
+</style>
 </head>
 <body>
 
-<div class="header">Horario del Alumno</div>
-<div class="subheader">Tradicional 2025/20253 / Agosto-Diciembre</div>
+<div class="wrap">
+  <div class="top-bar">Horario del Alumno</div>
+  <div class="sub-bar">Tradicional 2025/20253  / Agosto-Diciembre</div>
 
-<table>
-    <tr>
-        <th>Clave/Tipo/Grupo - Materia</th>
-        <th>Detalles</th>
-    </tr>
-    <tr>
-        <td class="curso">11001/Clase/T101 - Física II</td>
-        <td>
-            Créditos: 8.00 | Tipo: Crédito General<br>
-            Horario: JUEVES 11:00 AM - 11:55 AM; LUNES, MARTES, MIÉRCOLES, VIERNES 11:00 AM - 11:55 AM, UPSLP, Unidad Académica de Estudiantes 1, Salón A21<br>
-            <span class="profesor">Instructor(es): Mercado, Christian Alejandro</span>
-        </td>
-    </tr>
-    <tr>
-        <td class="curso">2104/Clase/T102 - Matemáticas II</td>
-        <td>
-            Créditos: 8.00 | Tipo: Crédito General<br>
-            Horario: JUEVES, LUNES, MARTES, MIÉRCOLES, VIERNES 1:00 PM - 1:55 PM, UPSLP, Unidad Académica de Estudiantes 1, Salón A11<br>
-            <span class="profesor">Instructor(es): Mercado, Christian Alejandro</span>
-        </td>
-    </tr>
-    <tr>
-        <td class="curso">257/Laboratorio/0196 - Laboratorio de Física II</td>
-        <td>
-            Créditos: 0.00 | Tipo: Extracurricular<br>
-            Horario: MIÉRCOLES 2:00 PM - 3:50 PM, UPSLP, Unidad Académica de Estudiantes 2, Salón LC3
-        </td>
-    </tr>
-    <tr>
-        <td class="curso">266/Laboratorio/P044 - Laboratorio de Programación II</td>
-        <td>
-            Créditos: 0.00 | Tipo: Extracurricular<br>
-            Horario: LUNES 3:00 PM - 4:55 PM, UPSLP, Centro de Cómputo, Salón A22
-        </td>
-    </tr>
-    <tr>
-        <td class="curso">3106/Clase/T133 - Programación Web II</td>
-        <td>
-            Créditos: 7.00 | Tipo: Crédito General<br>
-            Horario: JUEVES 9:00 AM - 9:55 AM, LUNES, MARTES, MIÉRCOLES, VIERNES 9:00 AM - 9:55 AM, UPSLP, Centro de Cómputo, Salón A22<br>
-            <span class="profesor">Instructor(es): Gómez, Liliana</span>
-        </td>
-    </tr>
-    <tr>
-        <td class="curso">3101/Clase/T104 - Matemáticas III</td>
-        <td>
-            Créditos: 8.00 | Tipo: Crédito General<br>
-            Horario: JUEVES, LUNES, MARTES, MIÉRCOLES, VIERNES 8:00 AM - 8:55 AM, UPSLP, Unidad Académica de Estudiantes 1, Salòn A22<br>
-            <span class="profesor">Instructor(es): Sánchez, Javier Daniel</span>
-        </td>
-    </tr>
-    <tr>
-        <td class="curso">MATR2025C/Clase/NSEG - Materia de Inscripción</td>
-        <td>
-            Créditos: 0.00 | Tipo: Créditos General
-        </td>
-    </tr>
-</table>
+  <div class="list">
+
+    <!-- Materia 1: Física II (claro, en la caja izquierda va la clave/tipo/grupo;
+         a la derecha el nombre con los detalles como en la captura) -->
+    <div class="materia-card">
+      <div class="lado-izq">
+        <div class="clave">11001</div>
+        <div class="tipo">Clase</div>
+        <div class="grupo">T101</div>
+      </div>
+
+      <div class="contenido">
+        <div class="titulo-materia">Física II</div>
+        <div class="detalle-text">
+          Créditos: <strong>8.00</strong> | Tipo: <strong>Crédito General</strong><br>
+          Horario: <strong>JUEVES 11:00 AM - 11:55 AM</strong>; LUNES, MARTES, MIÉRCOLES, VIERNES 11:00 AM - 11:55 AM<br>
+          UPSLP, Unidad Académica de Estudiantes 1, Salón A21
+        </div>
+        <div class="detalle-peque">Instructor(es): Mercado, Christian Alejandro</div>
+      </div>
+    </div>
+
+    <!-- Materia 2 -->
+    <div class="materia-card">
+      <div class="lado-izq">
+        <div class="clave">2104</div>
+        <div class="tipo">Clase</div>
+        <div class="grupo">T102</div>
+      </div>
+
+      <div class="contenido">
+        <div class="titulo-materia">Matemáticas II</div>
+        <div class="detalle-text">
+          Créditos: <strong>8.00</strong> | Tipo: <strong>Crédito General</strong><br>
+          Horario: JUEVES, LUNES, MARTES, MIÉRCOLES, VIERNES 1:00 PM - 1:55 PM<br>
+          UPSLP, Unidad Académica de Estudiantes 1, Salón A11
+        </div>
+        <div class="detalle-peque">Instructor(es): Mercado, Christian Alejandro</div>
+      </div>
+    </div>
+
+    <!-- Materia 3: Laboratorio de Física II -->
+    <div class="materia-card">
+      <div class="lado-izq">
+        <div class="clave">257</div>
+        <div class="tipo">Laboratorio</div>
+        <div class="grupo">0196</div>
+      </div>
+
+      <div class="contenido">
+        <div class="titulo-materia">Laboratorio de Física II</div>
+        <div class="detalle-text">
+          Créditos: <strong>0.00</strong> | Tipo: <strong>Extracurricular</strong><br>
+          Horario: MIÉRCOLES 2:00 PM - 3:50 PM<br>
+          UPSLP, Unidad Académica de Estudiantes 2, Salón LC3
+        </div>
+      </div>
+    </div>
+
+    <!-- Materia 4 -->
+    <div class="materia-card">
+      <div class="lado-izq">
+        <div class="clave">266</div>
+        <div class="tipo">Laboratorio</div>
+        <div class="grupo">P044</div>
+      </div>
+
+      <div class="contenido">
+        <div class="titulo-materia">Laboratorio de Programación II</div>
+        <div class="detalle-text">
+          Créditos: <strong>0.00</strong> | Tipo: <strong>Extracurricular</strong><br>
+          Horario: LUNES 3:00 PM - 4:55 PM<br>
+          UPSLP, Centro de Cómputo, Salón A22
+        </div>
+      </div>
+    </div>
+
+    <!-- Materia 5 -->
+    <div class="materia-card">
+      <div class="lado-izq">
+        <div class="clave">3106</div>
+        <div class="tipo">Clase</div>
+        <div class="grupo">T133</div>
+      </div>
+
+      <div class="contenido">
+        <div class="titulo-materia">Programación Web II</div>
+        <div class="detalle-text">
+          Créditos: <strong>7.00</strong> | Tipo: <strong>Crédito General</strong><br>
+          Horario: JUEVES 9:00 AM - 9:55 AM; LUNES, MARTES, MIÉRCOLES, VIERNES 9:00 AM - 9:55 AM<br>
+          UPSLP, Centro de Cómputo, Salón A22
+        </div>
+        <div class="detalle-peque">Instructor(es): Gómez, Liliana</div>
+      </div>
+    </div>
+
+    <!-- Materia 6 -->
+    <div class="materia-card">
+      <div class="lado-izq">
+        <div class="clave">3101</div>
+        <div class="tipo">Clase</div>
+        <div class="grupo">T104</div>
+      </div>
+
+      <div class="contenido">
+        <div class="titulo-materia">Matemáticas III</div>
+        <div class="detalle-text">
+          Créditos: <strong>8.00</strong> | Tipo: <strong>Crédito General</strong><br>
+          Horario: JUEVES, LUNES, MARTES, MIÉRCOLES, VIERNES 8:00 AM - 8:55 AM<br>
+          UPSLP, Unidad Académica de Estudiantes 1, Salón A22
+        </div>
+        <div class="detalle-peque">Instructor(es): Sánchez, Javier Daniel</div>
+      </div>
+    </div>
+
+    <!-- Materia 7 -->
+    <div class="materia-card">
+      <div class="lado-izq">
+        <div class="clave">MATR2025C</div>
+        <div class="tipo">Clase</div>
+        <div class="grupo">NSEG</div>
+      </div>
+
+      <div class="contenido">
+        <div class="titulo-materia">Materia de Inscripción</div>
+        <div class="detalle-text">
+          Créditos: <strong>0.00</strong> | Tipo: <strong>Créditos General</strong>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 </body>
-</html>
+    </html>
